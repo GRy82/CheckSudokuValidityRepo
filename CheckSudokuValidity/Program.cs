@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,18 +9,8 @@ namespace CheckSudokuValidity
 {
     class Program
     {
-        public static Dictionary<ThreeGrid, bool> threeGridsValidated;
+        public static Dictionary<int[], bool> threeGridsValidated;
 
-        public struct ThreeGrid{
-            int topLeftRow;
-            int topLeftColumn;
-
-            public ThreeGrid(int topLeftRow, int topLeftColumn)
-            {
-                this.topLeftRow = topLeftRow;
-                this.topLeftColumn = topLeftColumn;
-            }
-        }
         static void Main(string[] args)
         {
             char[,] board = new char[,] {
@@ -63,10 +54,15 @@ namespace CheckSudokuValidity
                   { '.', '6', '.', '.', '.', '.', '2', '8', '.' },
                   { '.', '.', '.', '4', '1', '9', '.', '9', '5' },
                   { '.', '.', '.', '.', '8', '.', '.', '7', '9'}};
+
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             Console.WriteLine(IsValidSudoku(board));
             Console.WriteLine(IsValidSudoku(board2));
             Console.WriteLine(IsValidSudoku(board3));
             Console.WriteLine(IsValidSudoku(board4));
+            stopwatch.Stop();
+            Console.WriteLine(stopwatch.ElapsedMilliseconds);
             Console.ReadLine();
         }
 
@@ -77,7 +73,7 @@ namespace CheckSudokuValidity
             if (dimensionLength % 3 != 0) return false; //check that board is a mutliple of 3 for valid 3x3 grid checks to work correctly.
             int gridDimensionLength = (int)dimensionLength;
             int threeGridsInOneDimension = gridDimensionLength / 3;
-            threeGridsValidated = new Dictionary<ThreeGrid, bool> { };
+            threeGridsValidated = new Dictionary<int[], bool> { };
 
             return IsValidColumn(board, 0, gridDimensionLength) && IsValidRow(board, 0, gridDimensionLength) && IsValidThreeGrid(board, 0, 0, gridDimensionLength);
         }
@@ -112,7 +108,7 @@ namespace CheckSudokuValidity
         public static bool IsValidThreeGrid(char[,] board, int row, int column, int dimensionLength)
         {
             if (row >= dimensionLength || column >= dimensionLength) return true;
-            ThreeGrid currentThreeGrid = new ThreeGrid(row, column);
+            int[] currentThreeGrid = new int[] { row, column };
             if (threeGridsValidated.TryGetValue(currentThreeGrid, out bool value)) return true;
             List<char> numbersSeen = new List<char> { };
             int lastRow = row + 3;
