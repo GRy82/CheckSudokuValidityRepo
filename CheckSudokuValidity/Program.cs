@@ -10,6 +10,7 @@ namespace CheckSudokuValidity
     class Program
     {
         public static Dictionary<int[], bool> threeGridsValidated;
+        public const int singleDimensionLength = 9;
 
         static void Main(string[] args)
         {
@@ -33,7 +34,6 @@ namespace CheckSudokuValidity
                   { '.', '6', '.', '.', '.', '.', '2', '8', '.' },
                   { '.', '.', '.', '4', '1', '9', '.', '.', '5' },
                   { '.', '.', '.', '.', '8', '.', '.', '7', '9'}};
-
             char[,] board3 = new char[,] {
                 { '5', '3', '.', '.', '7', '.', '.', '.', '.' },
                   { '6', '.', '.', '1', '9', '5', '.', '.', '.' },
@@ -54,28 +54,51 @@ namespace CheckSudokuValidity
                   { '.', '6', '.', '.', '.', '.', '2', '8', '.' },
                   { '.', '.', '.', '4', '1', '9', '.', '9', '5' },
                   { '.', '.', '.', '.', '8', '.', '.', '7', '9'}};
+            char[,] board5 = new char[,] {
+                  { '6', '.', '.', '1', '9', '5', '.', '.', '.' },
+                  { '.', '9', '8', '.', '.', '.', '.', '6', '.' },
+                  { '8', '.', '.', '.', '6', '.', '.', '.', '3' },
+                  { '4', '.', '.', '8', '.', '3', '.', '.', '1' },
+                  { '7', '.', '.', '.', '2', '.', '.', '.', '6' },
+                  { '.', '6', '.', '.', '.', '.', '2', '8', '.' },
+                  { '.', '.', '.', '4', '1', '9', '.', '.', '5' },
+                  { '.', '.', '.', '.', '8', '.', '.', '7', '9'}};
+            char[,] board6 = new char[,] {
+                  { '6', '.', '.', '1', '9', '5', '.', '.'},
+                  { '.', '9', '8', '.', '.', '.', '.', '6'},
+                  { '8', '.', '.', '.', '6', '.', '.', '.'},
+                  { '4', '.', '.', '8', '.', '3', '.', '.'},
+                  { '7', '.', '.', '.', '2', '.', '.', '.'},
+                  { '.', '6', '.', '.', '.', '.', '2', '8'},
+                  { '.', '.', '.', '4', '1', '9', '.', '.'},
+                  { '.', '.', '.', '.', '8', '.', '.', '7'}};
+            char[,] board7 = new char[,] {
+                  { '6', '.', '.' },
+                  { '.', '9', '8'},
+                  { '8', '.', '.'} };
 
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            Console.WriteLine(IsValidSudoku(board));
-            Console.WriteLine(IsValidSudoku(board2));
-            Console.WriteLine(IsValidSudoku(board3));
-            Console.WriteLine(IsValidSudoku(board4));
+            Console.WriteLine("1. " + IsValidSudoku(board));
+            Console.WriteLine("2. " + IsValidSudoku(board2));
+            Console.WriteLine("3. " + IsValidSudoku(board3));
+            Console.WriteLine("4. " + IsValidSudoku(board4));
+            Console.WriteLine("5. " + IsValidSudoku(board5));
+            Console.WriteLine("6. " + IsValidSudoku(board6));
+            Console.WriteLine("7. " + IsValidSudoku(board7));
             stopwatch.Stop();
-            Console.WriteLine(stopwatch.ElapsedMilliseconds);
+            Console.WriteLine(stopwatch.ElapsedMilliseconds + "ms elapsed.");
             Console.ReadLine();
         }
 
         public static bool IsValidSudoku(char[,] board)
         {
             var dimensionLength = Math.Sqrt(board.Length);
-            if (dimensionLength != (int)dimensionLength) return false; //check for 
-            if (dimensionLength % 3 != 0) return false; //check that board is a mutliple of 3 for valid 3x3 grid checks to work correctly.
-            int gridDimensionLength = (int)dimensionLength;
-            int threeGridsInOneDimension = gridDimensionLength / 3;
+            if (dimensionLength != singleDimensionLength) return false;
             threeGridsValidated = new Dictionary<int[], bool> { };
 
-            return IsValidColumn(board, 0, gridDimensionLength) && IsValidRow(board, 0, gridDimensionLength) && IsValidThreeGrid(board, 0, 0, gridDimensionLength);
+            return IsValidColumn(board, 0, singleDimensionLength) && IsValidRow(board, 0, singleDimensionLength)
+                && IsValidThreeGrid(board, 0, 0, singleDimensionLength);
         }
 
         public static bool IsValidColumn(char[,] board, int column, int dimensionLength)
