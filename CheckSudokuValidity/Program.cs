@@ -82,7 +82,7 @@ namespace CheckSudokuValidity
         {
             if (column >= dimensionLength) return true;
             List<char> numbersSeen = new List<char> { };
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < dimensionLength; i++)
             {
                 if (numbersSeen.Contains(board[i, column]))
                     return false;
@@ -95,7 +95,7 @@ namespace CheckSudokuValidity
         {
             if (row >= dimensionLength) return true;
             List<char> numbersSeen = new List<char> { };
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < dimensionLength; i++)
             {
                 if (numbersSeen.Contains(board[row, i]))
                     return false;
@@ -125,7 +125,6 @@ namespace CheckSudokuValidity
                     }
                 }
             }
-
             threeGridsValidated.Add(currentThreeGrid, true);
 
             return IsValidThreeGrid(board, lastRow, column, dimensionLength) && IsValidThreeGrid(board, row, lastColumn, dimensionLength);
