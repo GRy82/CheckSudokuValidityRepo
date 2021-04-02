@@ -8,6 +8,18 @@ namespace CheckSudokuValidity
 {
     class Program
     {
+        public static Dictionary<ThreeGrid, bool> threeGridsValidated;
+
+        public struct ThreeGrid{
+            int topLeftRow;
+            int topLeftColumn;
+
+            public ThreeGrid(int topLeftRow, int topLeftColumn)
+            {
+                this.topLeftRow = topLeftRow;
+                this.topLeftColumn = topLeftColumn;
+            }
+        }
         static void Main(string[] args)
         {
             char[,] board = new char[,] {
@@ -64,6 +76,8 @@ namespace CheckSudokuValidity
             if (dimensionLength != (int)dimensionLength) return false; //check for 
             if (dimensionLength % 3 != 0) return false; //check that board is a mutliple of 3 for valid 3x3 grid checks to work correctly.
             int gridDimensionLength = (int)dimensionLength;
+            int threeGridsInOneDimension = gridDimensionLength / 3;
+            threeGridsValidated = new Dictionary<ThreeGrid, bool> { };
 
             return IsValidColumn(board, 0, gridDimensionLength) && IsValidRow(board, 0, gridDimensionLength) && IsValidThreeGrid(board, 0, 0, gridDimensionLength);
         }
@@ -98,6 +112,8 @@ namespace CheckSudokuValidity
         public static bool IsValidThreeGrid(char[,] board, int row, int column, int dimensionLength)
         {
             if (row >= dimensionLength || column >= dimensionLength) return true;
+            ThreeGrid currentThreeGrid = new ThreeGrid(row, column);
+            if (threeGridsValidated.TryGetValue(currentThreeGrid, out bool value)) return true;
             List<char> numbersSeen = new List<char> { };
             int lastRow = row + 3;
             int lastColumn = column + 3;
@@ -108,9 +124,14 @@ namespace CheckSudokuValidity
                     if (numbersSeen.Contains(board[i, j]))
                         return false;
                     if (board[i, j] != '.')
+                    {
                         numbersSeen.Add(board[i, j]);
+                    }
                 }
             }
+
+            threeGridsValidated.Add(currentThreeGrid, true);
+
             return IsValidThreeGrid(board, lastRow, column, dimensionLength) && IsValidThreeGrid(board, row, lastColumn, dimensionLength);
         }
 
